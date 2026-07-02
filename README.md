@@ -1,14 +1,14 @@
 # Linux Command Center
 
-Linux Command Center is a custom Linux fleet management command center. Phase 0 provides only the base repository, local development environment, and skeleton services that later phases will build on.
+Linux Command Center is a custom Linux fleet management command center. The current implementation includes the local development stack, cookie-based local auth, base dashboard UI, node enrollment, and initial outbound agent WebSocket connectivity.
 
-No authentication, node enrollment, agent WebSocket communication, job execution, approvals, metrics collection, or terminal functionality is implemented in this phase.
+Job execution, approvals, metrics collection, service management, package management, and terminal functionality are not implemented yet.
 
 ## Stack
 
 * Backend: FastAPI, Python 3.12, SQLAlchemy 2.x, Alembic, PostgreSQL, Pydantic Settings, structured logging
 * Frontend: Next.js, TypeScript, App Router, TailwindCSS, ShadCN-ready configuration
-* Agent: Go CLI with config loader and version command
+* Agent: Go CLI with config loader, enrollment, and outbound WebSocket connection
 * DevOps: Docker Compose with backend, frontend, PostgreSQL, and Redis
 
 ## Local Requirements
@@ -61,6 +61,27 @@ ADMIN_DISPLAY_NAME=Administrator
 Use `admin` / `change-me-now` at `http://localhost:3000/login` in local development.
 
 The backend uses an HttpOnly `lcc_session` cookie and requires `X-CSRF-Token` on unsafe authenticated requests such as logout.
+
+## Phase 2 Node Enrollment
+
+Admins can create one-time enrollment tokens from `http://localhost:3000/dashboard/nodes`.
+
+After building the agent, enroll a host with the token shown in the dashboard:
+
+```bash
+cd agent
+./command-agent enroll --server-url http://localhost:8000 --token <enrollment-token>
+./command-agent connect
+```
+
+For local testing without writing `/etc/linux-command-agent/config.toml`, pass a temporary config path:
+
+```bash
+./command-agent enroll --server-url http://localhost:8000 --token <enrollment-token> --config /tmp/helix-agent.toml
+./command-agent connect --config /tmp/helix-agent.toml
+```
+
+Enrollment tokens and agent tokens are stored only as hashes in PostgreSQL. The WebSocket requires `agent.auth` as the first message before any other agent message is accepted.
 
 ## Access Frontend
 

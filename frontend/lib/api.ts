@@ -16,6 +16,24 @@ export type User = {
   role: "viewer" | "operator" | "admin" | "break_glass_admin";
 };
 
+export type Node = {
+  id: string;
+  machine_id: string;
+  hostname: string;
+  os_name: string | null;
+  kernel: string | null;
+  architecture: string | null;
+  online: boolean;
+  last_seen_at: string | null;
+  created_at: string;
+};
+
+export type EnrollmentToken = {
+  id: string;
+  token: string;
+  expires_at: string | null;
+};
+
 export async function getHealth(): Promise<HealthResponse> {
   const response = await apiFetch("/health");
 
@@ -94,4 +112,23 @@ export async function logout(): Promise<void> {
   if (!response.ok) {
     throw new Error("Logout failed");
   }
+}
+
+export async function getNodes(): Promise<Node[]> {
+  const response = await apiFetch("/nodes");
+  if (!response.ok) {
+    throw new Error("Unable to load nodes");
+  }
+  return response.json() as Promise<Node[]>;
+}
+
+export async function createEnrollmentToken(expiresInHours = 24): Promise<EnrollmentToken> {
+  const response = await apiFetch("/enrollment-tokens", {
+    method: "POST",
+    body: JSON.stringify({ expires_in_hours: expiresInHours }),
+  });
+  if (!response.ok) {
+    throw new Error("Unable to create enrollment token");
+  }
+  return response.json() as Promise<EnrollmentToken>;
 }

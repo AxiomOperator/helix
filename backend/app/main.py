@@ -5,9 +5,11 @@ from alembic.config import Config
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.agents import router as agents_router
 from app.api.auth import router as auth_router
 from app.api.health import router as health_router
 from app.api.me import router as me_router
+from app.api.nodes import router as nodes_router
 from app.config import get_settings
 from app.logging import configure_logging
 from app.services.seed_service import seed_admin_user
@@ -35,3 +37,5 @@ app.add_middleware(
 app.include_router(health_router)
 app.include_router(auth_router)
 app.include_router(me_router)
+app.include_router(nodes_router)
+app.include_router(agents_router)

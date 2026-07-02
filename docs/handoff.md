@@ -1837,46 +1837,56 @@ Allow Linux agents to enroll and connect to the control plane.
 
 ### Backend Checklist
 
-* [ ] Create nodes table
-* [ ] Create enrollment_tokens table
-* [ ] Create agent_credentials table
-* [ ] Add endpoint to create enrollment token
-* [ ] Add agent enrollment endpoint
-* [ ] Hash enrollment tokens at rest
-* [ ] Issue agent credential after enrollment
-* [ ] Implement `/ws/agent`
-* [ ] Authenticate agent WebSocket connection
-* [ ] Add agent session manager
-* [ ] Mark node online on connect
-* [ ] Mark node offline on disconnect
-* [ ] Add node enrollment audit event
+* [x] Create nodes table
+* [x] Create enrollment_tokens table
+* [x] Create agent_credentials table
+* [x] Add endpoint to create enrollment token
+* [x] Add agent enrollment endpoint
+* [x] Hash enrollment tokens at rest
+* [x] Issue agent credential after enrollment
+* [x] Implement `/ws/agent`
+* [x] Authenticate agent WebSocket connection
+* [x] Add agent session manager
+* [x] Mark node online on connect
+* [x] Mark node offline on disconnect
+* [x] Add node enrollment audit event
 
 ### Agent Checklist
 
-* [ ] Implement `enroll` command
-* [ ] Send machine ID, hostname, OS, kernel, architecture
-* [ ] Store node ID and agent token in config
-* [ ] Connect to `/ws/agent`
-* [ ] Send `agent.auth` as first WebSocket message
-* [ ] Send `agent.hello`
-* [ ] Reconnect on disconnect
-* [ ] Log connection status
+* [x] Implement `enroll` command
+* [x] Send machine ID, hostname, OS, kernel, architecture
+* [x] Store node ID and agent token in config
+* [x] Connect to `/ws/agent`
+* [x] Send `agent.auth` as first WebSocket message
+* [x] Send `agent.hello`
+* [x] Reconnect on disconnect
+* [x] Log connection status
 
 ### Frontend Checklist
 
-* [ ] Add enrollment token page
-* [ ] Add node list page
-* [ ] Show online/offline status
-* [ ] Show last seen timestamp
-* [ ] Add empty-state UI for no nodes
+* [x] Add enrollment token page
+* [x] Add node list page
+* [x] Show online/offline status
+* [x] Show last seen timestamp
+* [x] Add empty-state UI for no nodes
 
 ### Acceptance Criteria
 
-* [ ] Admin can create enrollment token
-* [ ] Agent can enroll successfully
-* [ ] Enrolled node appears in dashboard
-* [ ] Node shows online when agent is connected
-* [ ] Node shows offline when agent disconnects
+* [x] Admin can create enrollment token
+* [x] Agent can enroll successfully
+* [x] Enrolled node appears in dashboard
+* [x] Node shows online when agent is connected
+* [x] Node shows offline when agent disconnects
+
+### Phase 2 Notes
+
+Implemented `0002_phase_2_nodes` with `nodes`, `enrollment_tokens`, and `agent_credentials`. Enrollment and agent credential raw tokens are returned only to callers and stored as SHA-256 hashes. Admins create one-time enrollment tokens through the dashboard/API, agents enroll through `/agent/enroll`, and the backend issues a node public ID plus raw agent token.
+
+Added `/ws/agent` with strict first-message `agent.auth` handling, credential verification, in-memory agent session tracking, online/offline node transitions, and `agent.hello` acknowledgement. Wrong-first-message WebSocket attempts close with policy violation code `1008`.
+
+Added `command-agent enroll` and `command-agent connect`; the agent collects machine ID, hostname, OS, kernel placeholder, and architecture, persists node ID/token to config, authenticates first on WebSocket connect, sends `agent.hello`, logs status, and reconnects unless `--once` is used.
+
+Validation completed with `docker compose up --build -d`, `curl http://localhost:8000/health`, admin login plus CSRF-protected `POST /enrollment-tokens`, `command-agent enroll --server-url http://localhost:8000 --token <token> --config /tmp/opencode/helix-agent-config.toml`, bounded `command-agent connect --config /tmp/opencode/helix-agent-config.toml --once`, `GET /nodes`, one-time token reuse rejection, DB checks for 64-character token hashes and node audit rows, WebSocket wrong-first-message rejection, `docker compose exec -T frontend npm run build`, and `go build -o command-agent ./cmd/command-agent`.
 
 ---
 

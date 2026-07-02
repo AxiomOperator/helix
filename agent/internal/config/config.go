@@ -2,7 +2,9 @@ package config
 
 import (
 	"bufio"
+	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -74,4 +76,23 @@ func Load(path string) (Config, error) {
 	}
 
 	return cfg, scanner.Err()
+}
+
+func Save(path string, cfg Config) error {
+	if path == "" {
+		path = DefaultPath
+	}
+
+	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
+		return err
+	}
+
+	contents := fmt.Sprintf(`server_url = %q
+node_id = %q
+agent_token = %q
+heartbeat_interval_seconds = %d
+inventory_interval_seconds = %d
+log_level = %q
+`, cfg.ServerURL, cfg.NodeID, cfg.AgentToken, cfg.HeartbeatIntervalSeconds, cfg.InventoryIntervalSeconds, cfg.LogLevel)
+	return os.WriteFile(path, []byte(contents), 0o600)
 }
