@@ -40,6 +40,14 @@ services:
       DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://command_center:command_center@postgres:5432/command_center}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:3000}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-me-now}
+      ADMIN_DISPLAY_NAME: ${ADMIN_DISPLAY_NAME:-Administrator}
+      SESSION_COOKIE_NAME: ${SESSION_COOKIE_NAME:-lcc_session}
+      SESSION_EXPIRE_HOURS: ${SESSION_EXPIRE_HOURS:-8}
+      SESSION_COOKIE_SECURE: ${SESSION_COOKIE_SECURE:-false}
     ports:
       - "8000:8000"
     depends_on:

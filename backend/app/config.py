@@ -16,6 +16,14 @@ class Settings(BaseSettings):
     )
     redis_url: str = Field(default="redis://redis:6379/0", alias="REDIS_URL")
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
+    frontend_origin: str = Field(default="http://localhost:3000", alias="FRONTEND_ORIGIN")
+    admin_username: str = Field(default="admin", alias="ADMIN_USERNAME")
+    admin_email: str = Field(default="admin@example.com", alias="ADMIN_EMAIL")
+    admin_password: str = Field(default="change-me-now", alias="ADMIN_PASSWORD")
+    admin_display_name: str = Field(default="Administrator", alias="ADMIN_DISPLAY_NAME")
+    session_cookie_name: str = Field(default="lcc_session", alias="SESSION_COOKIE_NAME")
+    session_expire_hours: int = Field(default=8, alias="SESSION_EXPIRE_HOURS")
+    session_cookie_secure: bool = Field(default=False, alias="SESSION_COOKIE_SECURE")
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

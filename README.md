@@ -47,6 +47,21 @@ Expected response:
 }
 ```
 
+## Phase 1 Local Auth
+
+The backend seeds a local admin user from environment variables when it starts:
+
+```text
+ADMIN_USERNAME=admin
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=change-me-now
+ADMIN_DISPLAY_NAME=Administrator
+```
+
+Use `admin` / `change-me-now` at `http://localhost:3000/login` in local development.
+
+The backend uses an HttpOnly `lcc_session` cookie and requires `X-CSRF-Token` on unsafe authenticated requests such as logout.
+
 ## Access Frontend
 
 Open `http://localhost:3000`.

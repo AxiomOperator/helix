@@ -1790,36 +1790,42 @@ Implement local login and basic role-aware dashboard shell.
 
 ### Backend Checklist
 
-* [ ] Create users table
-* [ ] Add password hashing
-* [ ] Add seed admin user
-* [ ] Implement login endpoint
-* [ ] Implement logout endpoint
-* [ ] Implement CSRF token endpoint and validation
-* [ ] Implement `/me`
-* [ ] Add auth middleware/dependency
-* [ ] Add role field
-* [ ] Add audit event for login
-* [ ] Add audit event for logout
+* [x] Create users table
+* [x] Add password hashing
+* [x] Add seed admin user
+* [x] Implement login endpoint
+* [x] Implement logout endpoint
+* [x] Implement CSRF token endpoint and validation
+* [x] Implement `/me`
+* [x] Add auth middleware/dependency
+* [x] Add role field
+* [x] Add audit event for login
+* [x] Add audit event for logout
 
 ### Frontend Checklist
 
-* [ ] Implement login form
-* [ ] Use cookie session securely
-* [ ] Send CSRF token on unsafe requests
-* [ ] Implement authenticated routes
-* [ ] Add sidebar navigation
-* [ ] Add topbar with current user
-* [ ] Add logout button
-* [ ] Add role-aware navigation visibility
+* [x] Implement login form
+* [x] Use cookie session securely
+* [x] Send CSRF token on unsafe requests
+* [x] Implement authenticated routes
+* [x] Add sidebar navigation
+* [x] Add topbar with current user
+* [x] Add logout button
+* [x] Add role-aware navigation visibility
 
 ### Acceptance Criteria
 
-* [ ] Admin can log in
-* [ ] Invalid login fails cleanly
-* [ ] Authenticated API calls work
-* [ ] Unauthenticated users are redirected to login
-* [ ] Login/logout events appear in audit log
+* [x] Admin can log in
+* [x] Invalid login fails cleanly
+* [x] Authenticated API calls work
+* [x] Unauthenticated users are redirected to login
+* [x] Login/logout events appear in audit log
+
+### Phase 1 Notes
+
+Implemented local auth and base UI only: `users`, `sessions`, and `audit_log` models with Alembic migration `0001_phase_1_auth`; Argon2 password hashing; admin seeding from environment; secure HttpOnly session cookie; CSRF token endpoint and `X-CSRF-Token` validation for logout; `/auth/login`, `/auth/logout`, `/auth/csrf`, and `/me`; auth audit events; CORS for `http://localhost:3000`; frontend login form, cookie-auth API client, client auth guard, dashboard shell, topbar, logout, and role-aware navigation.
+
+Validation completed with `docker compose down -v && docker compose up --build -d`, `curl http://localhost:8000/health`, curl login with cookie jar, `/me`, `/auth/csrf`, missing-CSRF logout rejection, CSRF-authenticated logout, invalid login, inactive user rejection, seed idempotency check after backend restart, audit row checks, `docker compose exec -T frontend npm run build`, CORS preflight check, frontend route fetches, and `cd agent && go build -o command-agent ./cmd/command-agent && ./command-agent version`. Browser UI was not manually tested in an actual graphical browser in this environment, but the frontend routes build/render and the end-to-end auth API flow passes.
 
 ---
 
