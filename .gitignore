@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+next-env.d.ts
+
+# Go
+*.exe
+*.test
+*.out
+agent/command-agent
+bin/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Database and local data
+*.db
+*.sqlite
+*.sqlite3
+postgres-data/
+redis-data/
+data/
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS junk
+.DS_Store
+Thumbs.db
